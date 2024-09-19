@@ -1,8 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/api/updateClients": "pages/api/updateClients.js",
-  "/api/clientes": "pages/api/clientes.js",
-  "/api/enviar-mensagem": "pages/api/enviar-mensagem.js",
-  "/_document": "pages/_document.js"
-}
+{}
