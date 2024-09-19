@@ -1,0 +1,227 @@
+/* Container principal */
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px;
+  background-color: #e0e0e0; /* Fundo cinza */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Painéis */
+.leftPanel, .rightPanel, .sentPanel {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.leftPanel:hover, .rightPanel:hover, .sentPanel:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Títulos */
+.leftPanel h1, .rightPanel h2, .sentPanel h2 {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+/* Formulário */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.formGroup textarea, .formGroup select, .formGroup input[type="text"] {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.formGroup textarea:focus, .formGroup select:focus, .formGroup input[type="text"]:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 8px rgba(0, 112, 243, 0.2);
+}
+
+/* Botão */
+.formGroup button {
+  padding: 12px 20px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.formGroup button:hover {
+  background-color: #005bb5;
+  transform: translateY(-2px);
+}
+
+/* Tabela */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.table th, .table td {
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: left;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.table th {
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Lista de mensagens enviadas */
+.sentPanel ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.sentPanel li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sentPanel li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Adicionando cores */
+.leftPanel {
+  border-color: #0070f3;
+}
+
+.rightPanel {
+  border-color: #ffcc00;
+}
+
+.sentPanel {
+  border-color: #000000;
+}
+
+/* Campo para logo */
+.logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  max-width: 100px;
+  border-radius: 50%;
+}
+
+/* Estilo para o botão de atualização */
+.updateButton {
+  background-color: #4CAF50; /* Verde */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 4px;
+}
+
+.updateButton:hover {
+  background-color: #45a049;
+}
+
+.updateButton:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+/* Estilo para o botão de enviar mensagens */
+.submitButton {
+  background-color: #008CBA; /* Azul */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 4px;
+}
+
+.submitButton:hover {
+  background-color: #007399;
+}
+
+/* Estilo para o input de arquivo */
+.fileInput {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+/* Estilo para o select múltiplo */
+.multiSelect {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
+/* Estilo para as opções dentro do select múltiplo */
+.multiSelect option {
+  padding: 5px;
+}
+
+.multiSelect option:checked {
+  background-color: #e0e0e0;
+}
