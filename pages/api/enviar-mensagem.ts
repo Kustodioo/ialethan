@@ -4,7 +4,7 @@ import { parsePhoneNumber } from 'libphonenumber-js';
 import { MessageMedia } from 'whatsapp-web.js';
 import fs from 'fs';
 import path from 'path';
-import whatsappClient from '../../utils/whatsappClient';
+import { initialize, sendMessage, waitForReady } from '../../utils/whatsappClient';
 
 // Adicione esta interface
 interface NextApiRequestWithFile extends NextApiRequest {
@@ -37,10 +37,11 @@ async function enviarMensagemComAtraso(cliente: any, mensagem: string, media?: M
 
         const mensagemFinal = mensagem.replace('{link}', cliente.link);
 
+        const client = await initialize();
         if (media) {
-            await whatsappClient.sendMessage(`${formattedNumber}@c.us`, media, { caption: mensagemFinal });
+            await client.sendMessage(`${formattedNumber}@c.us`, media, { caption: mensagemFinal });
         } else {
-            await whatsappClient.sendMessage(`${formattedNumber}@c.us`, mensagemFinal);
+            await client.sendMessage(`${formattedNumber}@c.us`, mensagemFinal);
         }
 
         console.log(`Mensagem enviada para ${cliente.nome} (${formattedNumber}) em ${new Date().toISOString()}`);
@@ -70,7 +71,8 @@ export default async function handler(req: NextApiRequestWithFile, res: NextApiR
             }
 
             try {
-                await whatsappClient.waitForReady();
+                await initialize();
+                await waitForReady();
             } catch (error) {
                 console.error('Erro ao esperar pelo cliente WhatsApp:', error);
                 return res.status(500).json({ error: 'Cliente WhatsApp não está pronto' });

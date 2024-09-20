@@ -1,93 +1,53 @@
-import { Client, LocalAuth, MessageMedia } from 'whatsapp-web.js';
-import qrcode from 'qrcode-terminal';
-import path from 'path';
-import fs from 'fs-extra';
+import { Client, LocalAuth } from 'whatsapp-web.js';
+import EventEmitter from 'events';
 
-class WhatsAppClient {
-  private static instance: WhatsAppClient;
-  private client: Client;
-  private isReady: boolean = false;
-  private sessionPath: string;
+export const whatsappEvents = new EventEmitter();
 
-  private constructor() {
-    this.sessionPath = path.join(process.cwd(), '.wwebjs_auth');
-    
-    this.client = new Client({
-      authStrategy: new LocalAuth({ 
-        dataPath: this.sessionPath,
-        clientId: 'client-one' // Adicione um ID único para o cliente
-      }),
+let client: Client;
+
+export async function initialize() {
+  if (!client) {
+    console.log('Iniciando inicialização do cliente WhatsApp...');
+    client = new Client({
+      authStrategy: new LocalAuth(),
       puppeteer: {
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
       }
     });
 
-    this.client.on('qr', (qr) => {
-      qrcode.generate(qr, { small: true });
-      console.log('QR RECEIVED. Scan it with your WhatsApp app.');
+    client.on('qr', (qr) => {
+      console.log('QR Code gerado:', qr);
     });
 
-    this.client.on('ready', () => {
-      console.log('WhatsApp client is ready!');
-      this.isReady = true;
+    client.on('ready', () => {
+      console.log('Cliente WhatsApp está pronto!');
     });
 
-    this.client.on('disconnected', async (reason) => {
-      console.log('WhatsApp client was disconnected', reason);
-      this.isReady = false;
-      await this.cleanSession();
-      this.initialize(); // Tenta reinicializar após desconexão
-    });
-
-    this.initialize();
+    console.log('Chamando client.initialize()...');
+    await client.initialize();
   }
-
-  public static getInstance(): WhatsAppClient {
-    if (!WhatsAppClient.instance) {
-      WhatsAppClient.instance = new WhatsAppClient();
-    }
-    return WhatsAppClient.instance;
-  }
-
-  private async initialize() {
-    try {
-      await this.client.initialize();
-    } catch (error) {
-      console.error('Failed to initialize WhatsApp client:', error);
-      await this.cleanSession();
-      // Tenta inicializar novamente após limpar a sessão
-      setTimeout(() => this.initialize(), 5000);
-    }
-  }
-
-  private async cleanSession() {
-    try {
-      await fs.remove(this.sessionPath);
-      console.log('Session cleaned successfully');
-    } catch (error) {
-      console.error('Failed to clean session:', error);
-    }
-  }
-
-  public async sendMessage(to: string, content: string | MessageMedia, options?: any) {
-    if (!this.isReady) {
-      throw new Error('WhatsApp client is not ready');
-    }
-    return await this.client.sendMessage(to, content, options);
-  }
-
-  public async waitForReady(): Promise<void> {
-    if (this.isReady) return;
-    return new Promise((resolve) => {
-      const checkReady = setInterval(() => {
-        if (this.isReady) {
-          clearInterval(checkReady);
-          resolve();
-        }
-      }, 1000);
-    });
-  }
+  return client;
 }
 
-export default WhatsAppClient.getInstance();
+export async function sendMessage(to: string, message: string) {
+  if (!client) {
+    await initialize();
+  }
+  return client.sendMessage(to, message);
+}
+
+export async function waitForReady() {
+  if (!client) {
+    await initialize();
+  }
+  return new Promise((resolve) => {
+    if (client.info) {
+      resolve(true);
+    } else {
+      client.once('ready', () => resolve(true));
+    }
+  });
+}
+
+// ... resto do código ...

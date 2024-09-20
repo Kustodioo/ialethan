@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './ClientComponent.module.css';
 import Image from 'next/image'; // Importando o componente Image de next/image
+import QRCodeDisplay from '../../components/QRCodeDisplay'; // Ajuste o caminho conforme necessário
 
 interface Cliente {
   nome: string;
@@ -21,6 +22,7 @@ const ClientComponent = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
 
   // Faz o fetch dos dados da API e garante que `clientes` seja sempre um array
   useEffect(() => {
@@ -131,6 +133,15 @@ const ClientComponent = () => {
           <Image src="/path/to/logo.png" alt="Logo" width={150} height={150} style={{ width: 'auto', height: 'auto' }} />
         </div>
         <h1>Enviar Mensagens</h1>
+        
+        {/* Botão para mostrar/esconder o QR Code */}
+        <button onClick={() => setShowQRCode(!showQRCode)} className={styles.qrCodeButton}>
+          {showQRCode ? 'Esconder QR Code' : 'Mostrar QR Code'}
+        </button>
+        
+        {/* Exibir o QRCodeDisplay quando showQRCode for true */}
+        {showQRCode && <QRCodeDisplay />}
+        
         <form onSubmit={handleEnviarMensagem} className={styles.formGroup}>
           <label htmlFor="messageTemplate">Mensagem (use {`{link}`} para substituir pelo link do cliente):</label>
           <textarea

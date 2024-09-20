@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import ClienteLista from '../ components/ClienteList';
-import Mensagem from '../ components/MensagemForm';
+import ClienteLista from '../components/ClienteList';
+import Mensagem from '../components/MensagemForm';
 
 const App: React.FC = () => {
   const [clientes, setClientes] = useState([]);
