@@ -1,0 +1,230 @@
+/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./src/app/clientes/ClientComponent.module.css ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************/
+/* Container principal */
+.ClientComponent_container__WZ04a {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px;
+  background-color: #e0e0e0; /* Fundo cinza */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Painéis */
+.ClientComponent_leftPanel__qXT1t, .ClientComponent_rightPanel__aB5JE, .ClientComponent_sentPanel__ouCw4 {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ClientComponent_leftPanel__qXT1t:hover, .ClientComponent_rightPanel__aB5JE:hover, .ClientComponent_sentPanel__ouCw4:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Títulos */
+.ClientComponent_leftPanel__qXT1t h1, .ClientComponent_rightPanel__aB5JE h2, .ClientComponent_sentPanel__ouCw4 h2 {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+/* Formulário */
+.ClientComponent_formGroup__uOvz0 {
+  display: flex;
+  flex-direction: column;
+}
+
+.ClientComponent_formGroup__uOvz0 label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.ClientComponent_formGroup__uOvz0 textarea, .ClientComponent_formGroup__uOvz0 select, .ClientComponent_formGroup__uOvz0 input[type="text"] {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ClientComponent_formGroup__uOvz0 textarea:focus, .ClientComponent_formGroup__uOvz0 select:focus, .ClientComponent_formGroup__uOvz0 input[type="text"]:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 8px rgba(0, 112, 243, 0.2);
+}
+
+/* Botão */
+.ClientComponent_formGroup__uOvz0 button {
+  padding: 12px 20px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.ClientComponent_formGroup__uOvz0 button:hover {
+  background-color: #005bb5;
+  transform: translateY(-2px);
+}
+
+/* Tabela */
+.ClientComponent_table__iEsLD {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.ClientComponent_table__iEsLD th, .ClientComponent_table__iEsLD td {
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: left;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ClientComponent_table__iEsLD th {
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.ClientComponent_table__iEsLD tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.ClientComponent_table__iEsLD tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Lista de mensagens enviadas */
+.ClientComponent_sentPanel__ouCw4 ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.ClientComponent_sentPanel__ouCw4 li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ClientComponent_sentPanel__ouCw4 li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Adicionando cores */
+.ClientComponent_leftPanel__qXT1t {
+  border-color: #0070f3;
+}
+
+.ClientComponent_rightPanel__aB5JE {
+  border-color: #ffcc00;
+}
+
+.ClientComponent_sentPanel__ouCw4 {
+  border-color: #000000;
+}
+
+/* Campo para logo */
+.ClientComponent_logo__Z3NG8 {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.ClientComponent_logo__Z3NG8 img {
+  max-width: 100px;
+  border-radius: 50%;
+}
+
+/* Estilo para o botão de atualização */
+.ClientComponent_updateButton__9dMo5 {
+  background-color: #4CAF50; /* Verde */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 4px;
+}
+
+.ClientComponent_updateButton__9dMo5:hover {
+  background-color: #45a049;
+}
+
+.ClientComponent_updateButton__9dMo5:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+/* Estilo para o botão de enviar mensagens */
+.ClientComponent_submitButton__TAfJ3 {
+  background-color: #008CBA; /* Azul */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 4px;
+}
+
+.ClientComponent_submitButton__TAfJ3:hover {
+  background-color: #007399;
+}
+
+/* Estilo para o input de arquivo */
+.ClientComponent_fileInput__H9E8y {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+/* Estilo para o select múltiplo */
+.ClientComponent_multiSelect__NsxZw {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
+/* Estilo para as opções dentro do select múltiplo */
+.ClientComponent_multiSelect__NsxZw option {
+  padding: 5px;
+}
+
+.ClientComponent_multiSelect__NsxZw option:checked {
+  background-color: #e0e0e0;
+}
