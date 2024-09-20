@@ -14,6 +14,46 @@ interface NextApiRequestWithFile extends NextApiRequest {
 // Configuração do multer
 const upload = multer({ dest: '/tmp' });
 
+// Função para gerar um atraso aleatório entre 5 e 10 minutos (em milissegundos)
+const atrasoAleatorio = () => {
+    return Math.floor(Math.random() * (600000 - 300000 + 1) + 300000); // 300000ms = 5min, 600000ms = 10min
+};
+
+// Função de espera bloqueante
+const esperaBloqueante = (ms: number) => {
+    const inicio = Date.now();
+    while (Date.now() - inicio < ms) {
+        // Espera ativamente
+    }
+};
+
+async function enviarMensagemComAtraso(cliente: any, mensagem: string, media?: MessageMedia) {
+    try {
+        const phoneNumber = parsePhoneNumber(cliente.numero, 'BR');
+        if (!phoneNumber || !phoneNumber.isValid()) {
+            throw new Error(`Número de telefone inválido: ${cliente.numero}`);
+        }
+        const formattedNumber = phoneNumber.format('E.164').slice(1);
+
+        const mensagemFinal = mensagem.replace('{link}', cliente.link);
+
+        if (media) {
+            await whatsappClient.sendMessage(`${formattedNumber}@c.us`, media, { caption: mensagemFinal });
+        } else {
+            await whatsappClient.sendMessage(`${formattedNumber}@c.us`, mensagemFinal);
+        }
+
+        console.log(`Mensagem enviada para ${cliente.nome} (${formattedNumber}) em ${new Date().toISOString()}`);
+        
+        const atraso = atrasoAleatorio();
+        console.log(`Aguardando ${atraso / 60000} minutos antes do próximo envio. Hora atual: ${new Date().toISOString()}`);
+        esperaBloqueante(atraso);
+        console.log(`Espera concluída. Hora atual: ${new Date().toISOString()}`);
+    } catch (error) {
+        console.error(`Erro ao enviar mensagem para ${cliente.nome}:`, error);
+    }
+}
+
 export const config = {
     api: {
         bodyParser: false,
@@ -56,34 +96,24 @@ export default async function handler(req: NextApiRequestWithFile, res: NextApiR
                 media = new MessageMedia('image/png', base64Data, path.basename(req.file.originalname));
             }
 
-            for (const cliente of clientes) {
-                try {
-                    const phoneNumber = parsePhoneNumber(cliente.numero, 'BR');
-                    if (!phoneNumber || !phoneNumber.isValid()) {
-                        throw new Error(`Número de telefone inválido: ${cliente.numero}`);
-                    }
-                    const formattedNumber = phoneNumber.format('E.164').slice(1);
+            // Envia a resposta imediatamente
+            res.status(200).json({ message: 'Mensagens enfileiradas para envio' });
 
-                    const mensagemFinal = mensagem.replace('{link}', cliente.link);
-
-                    if (media) {
-                        await whatsappClient.sendMessage(`${formattedNumber}@c.us`, media, { caption: mensagemFinal });
-                    } else {
-                        await whatsappClient.sendMessage(`${formattedNumber}@c.us`, mensagemFinal);
-                    }
-
-                    console.log(`Mensagem enviada para ${cliente.nome} (${formattedNumber})`);
-                } catch (error) {
-                    console.error(`Erro ao enviar mensagem para ${cliente.nome}:`, error);
+            // Processa as mensagens em segundo plano
+            (async () => {
+                for (const cliente of clientes) {
+                    await enviarMensagemComAtraso(cliente, mensagem, media);
                 }
-            }
 
-            // Remover o arquivo temporário após o envio
-            if (req.file) {
-                fs.unlinkSync(req.file.path);
-            }
+                // Remover o arquivo temporário após o envio
+                if (req.file) {
+                    fs.unlinkSync(req.file.path);
+                }
 
-            res.status(200).json({ message: 'Mensagens enviadas com sucesso' });
+                console.log('Todas as mensagens foram enviadas.');
+            })().catch(error => {
+                console.error('Erro ao enviar mensagens:', error);
+            });
         });
     } else {
         res.setHeader('Allow', ['POST']);

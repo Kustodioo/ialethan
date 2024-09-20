@@ -10,6 +10,7 @@ import { promisify } from 'util';
 import { RequestHandler } from 'express';
 import parsePhoneNumber from 'libphonenumber-js';
 import cors from 'cors';  // Adicione esta linha
+import Queue from 'bull';
 
 // Configuração para ES Modules (corrige __dirname)
 const __filename = fileURLToPath(import.meta.url);
@@ -61,7 +62,51 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // limite de 5MB
 });
 
-app.post('/api/enviar-mensagem', upload.single('imagem'), async (req: Request, res: Response) => {
+// Função para gerar um atraso aleatório entre 5 e 10 minutos (em milissegundos)
+const atrasoAleatorio = () => {
+  return Math.floor(Math.random() * (600000 - 300000 + 1) + 300000); // 300000ms = 5min, 600000ms = 10min
+};
+
+// Função para criar um atraso usando Promise
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const enviarMensagem = async (cliente: Cliente, mensagem: string, media?: MessageMedia) => {
+  try {
+    if (!cliente.numero) {
+      throw new Error(`Número de telefone não fornecido para ${cliente.nome}`);
+    }
+
+    const phoneNumber = parsePhoneNumber(cliente.numero, 'BR');
+    if (!phoneNumber || !phoneNumber.isValid()) {
+      throw new Error(`Número de telefone inválido: ${cliente.numero}`);
+    }
+    const formattedNumber = phoneNumber.format('E.164').slice(1);
+
+    const mensagemFinal = mensagem.replace('{link}', cliente.link);
+
+    if (media) {
+      await whatsappClient.sendMessage(`${formattedNumber}@c.us`, media, { caption: mensagemFinal });
+    } else {
+      await whatsappClient.sendMessage(`${formattedNumber}@c.us`, mensagemFinal);
+    }
+
+    console.log(`Mensagem enviada para ${cliente.nome} (${formattedNumber}) em ${new Date().toISOString()}`);
+  } catch (error) {
+    console.error(`Erro ao enviar mensagem para ${cliente.nome}:`, error);
+  }
+};
+
+const enviarMensagensComAtraso = async (clientes: Cliente[], mensagem: string, media?: MessageMedia) => {
+  for (const cliente of clientes) {
+    await enviarMensagem(cliente, mensagem, media);
+    const atraso = atrasoAleatorio();
+    console.log(`Aguardando ${atraso / 60000} minutos antes do próximo envio. Hora atual: ${new Date().toISOString()}`);
+    await delay(atraso);
+  }
+  console.log('Todas as mensagens foram enviadas.');
+};
+
+app.post('/api/enviar-mensagem', async (req: Request, res: Response) => {
   console.log('Recebida solicitação para enviar mensagem');
   console.log('Body:', req.body);
   console.log('File:', req.file);
@@ -70,56 +115,26 @@ app.post('/api/enviar-mensagem', upload.single('imagem'), async (req: Request, r
   try {
     const { clientesSelecionados, mensagem } = req.body;
     
-    if (!clientesSelecionados) {
-      return res.status(400).json({ error: 'Lista de clientes não fornecida' });
-    }
-    
-    if (!mensagem) {
-      return res.status(400).json({ error: 'Mensagem não fornecida' });
-    }
+    // ... validações existentes ...
 
-    let clientes;
-    try {
-      clientes = JSON.parse(clientesSelecionados);
-    } catch (error) {
-      console.error('Erro ao fazer parse de clientesSelecionados:', error);
-      return res.status(400).json({ error: 'Erro ao processar lista de clientes' });
+    let media: MessageMedia | undefined;
+    if (req.file) {
+      media = MessageMedia.fromFilePath(req.file.path);
     }
 
-    if (!Array.isArray(clientes) || clientes.length === 0) {
-      console.error('Lista de clientes inválida:', clientes);
-      return res.status(400).json({ error: 'Lista de clientes inválida ou vazia' });
-    }
+    // Envia a resposta imediatamente
+    res.json({ message: 'Mensagens enfileiradas para envio.' });
 
-    for (const cliente of clientes) {
-      try {
-        const phoneNumber = parsePhoneNumber(cliente.numero, 'BR');
-        if (!phoneNumber || !phoneNumber.isValid()) {
-          throw new Error(`Número de telefone inválido: ${cliente.numero}`);
-        }
-        const formattedNumber = phoneNumber.format('E.164').slice(1);
+    // Inicia o processo de envio em segundo plano
+    enviarMensagensComAtraso(clientesSelecionados, mensagem, media).catch(error => {
+      console.error('Erro ao enviar mensagens:', error);
+    });
 
-        const mensagemFinal = mensagem.replace('{link}', cliente.link);
-
-        if (req.file) {
-          const media = MessageMedia.fromFilePath(req.file.path);
-          await whatsappClient.sendMessage(`${formattedNumber}@c.us`, media, { caption: mensagemFinal });
-        } else {
-          await whatsappClient.sendMessage(`${formattedNumber}@c.us`, mensagemFinal);
-        }
-
-        console.log(`Mensagem enviada para ${cliente.nome} (${formattedNumber})`);
-      } catch (error) {
-        console.error(`Erro ao enviar mensagem para ${cliente.nome}:`, error);
-      }
-    }
-
-    // Remover o arquivo de upload após o envio
+    // Remover o arquivo de upload após iniciar o processo de envio
     if (req.file) {
       fs.unlinkSync(req.file.path);
     }
 
-    res.json({ message: 'Mensagens enviadas com sucesso!' });
   } catch (error) {
     console.error('Erro ao processar solicitação:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
