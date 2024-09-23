@@ -4,6 +4,7 @@ import EventEmitter from 'events';
 export const whatsappEvents = new EventEmitter();
 
 let client: Client;
+let qrCodeData: string | null = null;
 
 export async function initialize() {
   if (!client) {
@@ -18,16 +19,25 @@ export async function initialize() {
 
     client.on('qr', (qr) => {
       console.log('QR Code gerado:', qr);
+      qrCodeData = qr;
+      whatsappEvents.emit('qr', qr);
     });
 
     client.on('ready', () => {
       console.log('Cliente WhatsApp está pronto!');
+      qrCodeData = null;
+      whatsappEvents.emit('ready');
     });
 
     console.log('Chamando client.initialize()...');
     await client.initialize();
   }
   return client;
+}
+
+export function getQRCode() {
+  console.log('getQRCode chamado, qrCodeData:', qrCodeData);
+  return qrCodeData;
 }
 
 export async function sendMessage(to: string, message: string) {

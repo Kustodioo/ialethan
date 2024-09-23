@@ -2,7 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/get-qr-code": "pages/api/get-qr-code.js",
-  "/api/enviar-mensagem": "pages/api/enviar-mensagem.js",
-  "/api/clientes": "pages/api/clientes.js"
+  "/api/clientes": "pages/api/clientes.js",
+  "/api/get-qr-code": "pages/api/get-qr-code.js"
 }
